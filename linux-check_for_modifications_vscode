@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Loop through all directories in the current folder
+for D in */; do
+    # Check if the directory contains a .git folder
+    if [ -d "$D/.git" ]; then
+        pushd "$D" > /dev/null || exit
+        
+        # Check if there are any modifications, including untracked files
+        if [ -n "$(git status --porcelain)" ]; then
+            echo "Modifications found in $D, opening VS Code."
+            code .
+        else
+            echo "No modifications in $D."
+        fi
+        
+        popd > /dev/null || exit
+    else
+        echo "$D is not a git repository."
+    fi
+done
+
+read -p "Press enter to continue"
